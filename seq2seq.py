@@ -22,10 +22,12 @@ class seq2seq(nn.Module):
         input_length = len(input_encoder)
         output_length = len(input_decoder)
         # encoder_outputs = torch.zeros(self.max_length, self.encoder.emb_dim)
-        encoder_hidden = torch.zeros(self.max_length, self.encoder.hidden_size)
+        encoder_outputs = torch.zeros(self.max_length, self.encoder.emb_dim)
+
         for ei in range(input_length):
-            encoder_output, encoder_hidden = self.encoder(input_encoder[ei])
-            encoder_hidden[ei] = encoder_hidden[0, 0]
+            print('input[0]'+input_encoder[ei])
+            encoder_output, encoder_hidden = self.encoder(input_encoder[ei],self.encoder.hidden)
+            encoder_outputs[ei] = encoder_output[0, 0]
 
         decoder_hidden = encoder_hidden
         decoder_input = torch.tensor([[0]])
@@ -41,7 +43,6 @@ class seq2seq(nn.Module):
                   # Teacher forcing
         else:
             # not teacher forcing
-            decoder_input = torch.tensor([[0]])
             for di in range(output_length):
 
                 decoder_output, decoder_hidden, decoder_attention = self.decoder(decoder_input, decoder_hidden, encoder_outputs)
