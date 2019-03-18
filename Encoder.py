@@ -22,7 +22,7 @@ class Encoder(nn.Module):
         self.hidden_size = hidden_size
         self.embedding = nn.Embedding(word_size, emb_dim)
         self.emb_dim = emb_dim
-        self.lstm = nn.LSTM(input_size = emb_dim, hidden_size=hidden_size)
+        self.gru = nn.GRU(input_size = emb_dim, hidden_size=hidden_size)
         self.hidden = self._init_hidden(hidden_size, device)
         # self.hidden_list = Variable(torch.zeros(max_length, hidden_size)).to(device)
         #self.hidden_list.append(self.hidden)
@@ -36,7 +36,7 @@ class Encoder(nn.Module):
         output = self.embedding(input).view(1, 1, -1)
 
         # output.size = number of features
-        output, self.hidden = self.lstm(output, self.hidden)
+        output, self.hidden = self.gru(output, self.hidden)
         #self.hidden_list.append(self.hidden)
         # self.hidden_list = torch.cat((self.hidden_list,self.hidden[0]),0)
 
